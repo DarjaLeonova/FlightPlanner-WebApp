@@ -19,7 +19,6 @@ namespace FlightPlanner_WebApp.Controllers
             {
                 return NotFound();
             }
-
             return Ok(flight);
         }
 

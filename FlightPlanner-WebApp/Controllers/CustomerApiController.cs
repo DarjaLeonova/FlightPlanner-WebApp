@@ -35,8 +35,7 @@ namespace FlightPlanner_WebApp.Controllers
             }else
             {
                 return Ok(new SearchFlightResult());
-            }
-            
+            }   
         }
 
         [Route("flights/{id}")]
@@ -44,6 +43,7 @@ namespace FlightPlanner_WebApp.Controllers
         public IActionResult GetFlight(int id)
         {
             lock (LockObject) {
+
                 var flight = FlightStorage.GetFlight(id);
 
                 if (flight == null)
