@@ -14,30 +14,21 @@ namespace FlightPlanner_WebApp
 
         public bool ObjectValidation()
         {
-            //lock (LockObject)
-            //{
-                if (From == null || To == null) return true;
-                var checkFrom = string.IsNullOrEmpty(From);
-                var checkTo = string.IsNullOrEmpty(To);
-                var checkDeparture = string.IsNullOrEmpty(DepartureTime);
+            if (From == null || To == null) return true;
 
-                return checkFrom ||
-                    checkTo ||
-                    checkDeparture;
-            //}
-            
+            var checkFrom = string.IsNullOrEmpty(From);
+            var checkTo = string.IsNullOrEmpty(To);
+            var checkDeparture = string.IsNullOrEmpty(DepartureTime);
+
+            return checkFrom ||
+                checkTo ||
+                checkDeparture;  
         }
 
         public bool AirportValidation()
         {
-            //lock (LockObject)
-            //{
-                if (From == To) return true;
-                return false;
-           // }
-            
+            if (From == To) return true;
+            return false;
         }
-
-        
     }
 }
