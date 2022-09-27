@@ -1,4 +1,5 @@
 ﻿using FlightPlanner_WebApp.Validations.AirportValidations;
+using FlightPlanner_WebApp.Validations.FlightValidations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -34,7 +35,9 @@ namespace FlightPlanner_WebApp.Controllers
                     return Conflict();
                 }
 
-                if (flight.ObjectValidation() || AirportValidations.SameAirportValidation(flight.To, flight.From) || !flight.NotValidDateTime(flight))
+                if (FlightValidations.ObjectValidation(flight) ||
+                    AirportValidations.SameAirportValidation(flight.To, flight.From) || 
+                    !FlightValidations.NotValidDateTimeValidation(flight))
                 {
                     return BadRequest();
                 }
