@@ -14,6 +14,7 @@ namespace FlightPlanner_WebApp.Controllers
         public IActionResult GetFlight(int id)
         {
             var flight = FlightStorage.GetFlight(id);
+
             if(flight == null)
             {
                 return NotFound();
