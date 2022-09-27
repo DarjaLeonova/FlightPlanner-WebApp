@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FlightPlanner_WebApp.Validations.AirportValidations;
+using System;
 
 namespace FlightPlanner_WebApp
 {
@@ -25,8 +26,8 @@ namespace FlightPlanner_WebApp
         public bool ObjectValidation()
         {
             if (From  == null || To == null) return true;
-            var checkFrom = From.ObjectValidation();
-            var checkTo = To.ObjectValidation();
+            var checkFrom = AirportValidations.ObjectValidation(this.From);
+            var checkTo = AirportValidations.ObjectValidation(this.To);
             var checkCarrier = string.IsNullOrEmpty(Carrier) ;
             var checkDeparture = string.IsNullOrEmpty(DepartureTime);
             var checkArrival = string.IsNullOrEmpty(ArrivalTime);
