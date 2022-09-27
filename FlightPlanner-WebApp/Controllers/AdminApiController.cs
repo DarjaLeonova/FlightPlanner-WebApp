@@ -18,6 +18,7 @@ namespace FlightPlanner_WebApp.Controllers
             {
                 return NotFound();
             }
+
             return Ok(flight);
         }
 
@@ -25,7 +26,6 @@ namespace FlightPlanner_WebApp.Controllers
         [HttpPut]
         public IActionResult PutFlight(Flight flight)
         {
-            // if (flight == null) return NoContent();
             lock (LockObject)
             {
                 if (FlightStorage.FlightExist(flight))
@@ -40,14 +40,8 @@ namespace FlightPlanner_WebApp.Controllers
 
                 flight = FlightStorage.AddFlight(flight);
 
-
-
                 return Created("", flight);
             }
-            
-
-
-
         }
 
         [Route("flights/{id}")]
@@ -59,7 +53,6 @@ namespace FlightPlanner_WebApp.Controllers
                 FlightStorage.DeleteFlight(id);
                 return Ok();
             }
-            
         }
     }
 }
