@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using FlightPlanner_WebApp.Validations.AirportValidations;
+using FlightPlanner_WebApp.Validations.FlightValidations;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlightPlanner_WebApp.Controllers
@@ -15,6 +16,7 @@ namespace FlightPlanner_WebApp.Controllers
         public IActionResult GetFlight(int id)
         {
             var flight = FlightStorage.GetFlight(id);
+
             if(flight == null)
             {
                 return NotFound();
@@ -26,7 +28,6 @@ namespace FlightPlanner_WebApp.Controllers
         [HttpPut]
         public IActionResult PutFlight(Flight flight)
         {
-            // if (flight == null) return NoContent();
             lock (LockObject)
             {
                 if (FlightStorage.FlightExist(flight))
@@ -34,21 +35,17 @@ namespace FlightPlanner_WebApp.Controllers
                     return Conflict();
                 }
 
-                if (flight.ObjectValidation() || flight.From.SameAirportValidation(flight.To) || !flight.NotValidDateTime(flight))
+                if (FlightValidations.ObjectValidation(flight) ||
+                    AirportValidations.SameAirportValidation(flight.To, flight.From) || 
+                    !FlightValidations.NotValidDateTimeValidation(flight))
                 {
                     return BadRequest();
                 }
 
                 flight = FlightStorage.AddFlight(flight);
 
-
-
                 return Created("", flight);
             }
-            
-
-
-
         }
 
         [Route("flights/{id}")]
@@ -60,7 +57,6 @@ namespace FlightPlanner_WebApp.Controllers
                 FlightStorage.DeleteFlight(id);
                 return Ok();
             }
-            
         }
     }
 }

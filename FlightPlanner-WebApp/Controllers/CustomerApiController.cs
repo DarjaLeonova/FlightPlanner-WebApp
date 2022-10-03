@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace FlightPlanner_WebApp.Controllers
 {
@@ -29,14 +28,14 @@ namespace FlightPlanner_WebApp.Controllers
                 return BadRequest();
             }
             var matchedFlights = FlightStorage.GetMatchedFlightResult(flightRequest);
+
             if(matchedFlights.Items != null)
             {
                 return Ok(matchedFlights);
             }else
             {
                 return Ok(new SearchFlightResult());
-            }
-            
+            }   
         }
 
         [Route("flights/{id}")]
@@ -44,13 +43,14 @@ namespace FlightPlanner_WebApp.Controllers
         public IActionResult GetFlight(int id)
         {
             lock (LockObject) {
+
                 var flight = FlightStorage.GetFlight(id);
+
                 if (flight == null)
                 {
                     return NotFound();
                 }
                 return Ok(flight);
-
             } 
         }
     }

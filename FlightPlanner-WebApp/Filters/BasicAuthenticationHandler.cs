@@ -28,6 +28,7 @@ namespace FlightPlanner_WebApp.Filters
                 return AuthenticateResult.Fail("Missing Authorization Header");
 
             var authorized = false;
+
             try
             {
                 var authHeader = AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]);
@@ -48,6 +49,7 @@ namespace FlightPlanner_WebApp.Filters
             var claims = new[] {
                 new Claim(ClaimTypes.Name, "user")
             };
+
             var identity = new ClaimsIdentity(claims, Scheme.Name);
             var principal = new ClaimsPrincipal(identity);
             var ticket = new AuthenticationTicket(principal, Scheme.Name);
