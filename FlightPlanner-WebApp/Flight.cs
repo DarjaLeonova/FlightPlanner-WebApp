@@ -1,9 +1,11 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace FlightPlanner_WebApp
 {
     public class Flight
     {
+        [Key]
         public int Id { get; set; }
         public Airport From { get; set; }
         public Airport To { get; set; }

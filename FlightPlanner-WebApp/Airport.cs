@@ -1,9 +1,12 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace FlightPlanner_WebApp
 {
     public class Airport
     {
+        [Key]
+        public int Id { get; set; }
         public string Country { get; set; }
         public string City { get; set; }
         [JsonPropertyName("airport")]
