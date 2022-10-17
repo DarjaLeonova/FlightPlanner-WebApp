@@ -1,3 +1,5 @@
+using FlightPlanner.Core.Services;
+using FlightPlanner.Services;
 using FlightPlanner_WebApp.Data;
 using FlightPlanner_WebApp.Filters;
 using Microsoft.AspNetCore.Authentication;
@@ -43,6 +45,9 @@ namespace FlightPlanner_WebApp
             services.AddDbContext<FlightPlannerDbContext>(options => options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")
                 ));
+            services.AddScoped<IDbService, DbService>();
+            services.AddScoped<IEntityService<Airport>, EntityService<Airport>>();
+            services.AddScoped<IEntityService<Flight>, EntityService<Flight>>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

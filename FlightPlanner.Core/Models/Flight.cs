@@ -1,11 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FlightPlanner.Core.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace FlightPlanner_WebApp
 {
-    public class Flight
+    public class Flight : Entity
     {
-        [Key]
-        public int Id { get; set; }
         public virtual Airport From { get; set; }
         public virtual Airport To { get; set; }
         public string Carrier { get; set; }
