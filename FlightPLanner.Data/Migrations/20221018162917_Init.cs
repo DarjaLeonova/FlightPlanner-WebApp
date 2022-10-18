@@ -2,9 +2,9 @@
 
 #nullable disable
 
-namespace FlightPlanner_WebApp.Migrations
+namespace FlightPLanner.Data.Migrations
 {
-    public partial class AddFlightToDatabase : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -14,9 +14,9 @@ namespace FlightPlanner_WebApp.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Country = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    City = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AirportName = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Country = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AirportName = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -29,11 +29,11 @@ namespace FlightPlanner_WebApp.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FromId = table.Column<int>(type: "int", nullable: true),
-                    ToId = table.Column<int>(type: "int", nullable: true),
-                    Carrier = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DepartureTime = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ArrivalTime = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    FromId = table.Column<int>(type: "int", nullable: false),
+                    ToId = table.Column<int>(type: "int", nullable: false),
+                    Carrier = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DepartureTime = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ArrivalTime = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -42,12 +42,14 @@ namespace FlightPlanner_WebApp.Migrations
                         name: "FK_Flights_Airports_FromId",
                         column: x => x.FromId,
                         principalTable: "Airports",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_Flights_Airports_ToId",
                         column: x => x.ToId,
                         principalTable: "Airports",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateIndex(

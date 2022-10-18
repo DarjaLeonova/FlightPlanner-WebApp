@@ -1,4 +1,5 @@
-﻿using FlightPlanner_WebApp.Data;
+﻿using FlightPlanner.Core.Services;
+using FlightPlanner_WebApp.Data;
 using FlightPlanner_WebApp.Validations.AirportValidations;
 using FlightPlanner_WebApp.Validations.FlightValidations;
 using Microsoft.AspNetCore.Authorization;
@@ -12,20 +13,20 @@ namespace FlightPlanner_WebApp.Controllers
     public class AdminApiController : ControllerBase
     {
         public static readonly object LockObject = new object();
-        private readonly FlightPlannerDbContext _db;
+        private readonly IFlightService _flightService;
         private FlightStorage _flightStorage;
 
-        public AdminApiController(FlightPlannerDbContext db)
+        public AdminApiController(IFlightService flightService)
         {
-            _db = db;
-            _flightStorage = new FlightStorage(_db);
+            _flightService = flightService;
+            //_flightStorage = new FlightStorage(_db);
         }
 
         [Route("flights/{id}")]
         [HttpGet]
         public IActionResult GetFlight(int id)
         {
-            var flight = _flightStorage.GetFlight(id);
+            var flight = _flightService.GetCompleteFlightById(id);
 
             if(flight == null)
             {
@@ -52,7 +53,7 @@ namespace FlightPlanner_WebApp.Controllers
                     return BadRequest();
                 }
 
-                flight = _flightStorage.AddFlight(flight);
+                _flightService.Create(flight);
 
                 return Created("", flight);
             }
@@ -64,7 +65,11 @@ namespace FlightPlanner_WebApp.Controllers
         {
             lock (LockObject)
             {
-                _flightStorage.DeleteFlight(id);
+                var flight = _flightService.GetById(id);
+                if(flight != null)
+                {
+                    _flightService.Delete(flight);
+                }
                 return Ok();
             }
         }

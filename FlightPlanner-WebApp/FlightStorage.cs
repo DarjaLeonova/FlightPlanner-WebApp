@@ -21,12 +21,12 @@ namespace FlightPlanner_WebApp
                 .ToList();
         }
 
-        public  Flight AddFlight(Flight flight)
+        public Flight AddFlight(Flight flight)
         {
             _db.Flights.Add(flight);
             _db.SaveChanges();
 
-            return flight; 
+            return flight;
         }
 
         public Flight GetFlight(int id)
@@ -35,7 +35,7 @@ namespace FlightPlanner_WebApp
             return flight;
         }
 
-        public  void Clear()
+        public void Clear()
         {
             _id = 0;
 
@@ -77,7 +77,7 @@ namespace FlightPlanner_WebApp
                 _db.SaveChanges();
                 return flight;
             }
-            return null;    
+            return null;
         }
 
         public HashSet<Airport> GetAllAirports()
@@ -92,7 +92,7 @@ namespace FlightPlanner_WebApp
             return airports;
         }
 
-        public  List<Airport> FindAirportByParameter(string search) 
+        public List<Airport> FindAirportByParameter(string search)
         {
             var matchedAirports = new List<Airport>();
             var airports = _db.Airports.ToList();
@@ -129,7 +129,7 @@ namespace FlightPlanner_WebApp
                 }
             }
             return new SearchFlightResult(flightResults, 0, flightResults.Count);
-        } 
+        }
     }
 }
 

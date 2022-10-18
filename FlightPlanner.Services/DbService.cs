@@ -8,6 +8,10 @@ namespace FlightPlanner.Services
     public class DbService : IDbService
     {
         protected FlightPlannerDbContext _context;
+        public DbService(FlightPlannerDbContext context)
+        {
+            _context = context;
+        }
 
         public void Create<T>(T entity) where T : Entity 
         {

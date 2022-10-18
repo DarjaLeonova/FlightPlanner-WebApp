@@ -1,5 +1,6 @@
 ﻿using FlightPlanner.Core.Models;
 using FlightPlanner.Core.Services;
+using FlightPlanner_WebApp.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,10 @@ namespace FlightPlanner.Services
 {
     public class EntityService<T> : DbService, IEntityService<T> where T : Entity
     {
+        public EntityService(FlightPlannerDbContext context) : base(context)
+        {
+        }
+
         public void Create(T entity)
         {
             Create<T>(entity);

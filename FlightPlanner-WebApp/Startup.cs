@@ -48,6 +48,7 @@ namespace FlightPlanner_WebApp
             services.AddScoped<IDbService, DbService>();
             services.AddScoped<IEntityService<Airport>, EntityService<Airport>>();
             services.AddScoped<IEntityService<Flight>, EntityService<Flight>>();
+            services.AddScoped<IFlightService, FlightService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
