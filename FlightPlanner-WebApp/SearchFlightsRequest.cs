@@ -9,7 +9,6 @@ namespace FlightPlanner_WebApp
         public string To { get; set; }
         [JsonPropertyName("departureDate")]
         public string DepartureTime { get; set; }
-
         public static readonly object LockObject = new object();
 
         public bool ObjectValidation()

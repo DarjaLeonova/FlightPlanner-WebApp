@@ -1,7 +1,9 @@
-﻿using FlightPlanner_WebApp.Validations.AirportValidations;
+﻿using FlightPlanner_WebApp.Data;
+using FlightPlanner_WebApp.Validations.AirportValidations;
 using FlightPlanner_WebApp.Validations.FlightValidations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace FlightPlanner_WebApp.Controllers
 {
@@ -10,18 +12,26 @@ namespace FlightPlanner_WebApp.Controllers
     public class AdminApiController : ControllerBase
     {
         public static readonly object LockObject = new object();
+        private readonly FlightPlannerDbContext _db;
+        private FlightStorage _flightStorage;
+
+        public AdminApiController(FlightPlannerDbContext db)
+        {
+            _db = db;
+            _flightStorage = new FlightStorage(_db);
+        }
 
         [Route("flights/{id}")]
         [HttpGet]
         public IActionResult GetFlight(int id)
         {
-            var flight = FlightStorage.GetFlight(id);
+            var flight = _flightStorage.GetFlight(id);
 
             if(flight == null)
             {
                 return NotFound();
             }
-            return Ok(flight);
+            return Ok(_flightStorage);
         }
 
         [Route("flights")]
@@ -30,19 +40,19 @@ namespace FlightPlanner_WebApp.Controllers
         {
             lock (LockObject)
             {
-                if (FlightStorage.FlightExist(flight))
+                if (_flightStorage.FlightExist(flight))
                 {
                     return Conflict();
                 }
 
-                if (FlightValidations.ObjectValidation(flight) ||
-                    AirportValidations.SameAirportValidation(flight.To, flight.From) || 
+               if (FlightValidations.ObjectValidation(flight) ||
+                    AirportValidations.SameAirportValidation(flight.To, flight.From) ||
                     !FlightValidations.NotValidDateTimeValidation(flight))
                 {
                     return BadRequest();
                 }
 
-                flight = FlightStorage.AddFlight(flight);
+                flight = _flightStorage.AddFlight(flight);
 
                 return Created("", flight);
             }
@@ -54,7 +64,7 @@ namespace FlightPlanner_WebApp.Controllers
         {
             lock (LockObject)
             {
-                FlightStorage.DeleteFlight(id);
+                _flightStorage.DeleteFlight(id);
                 return Ok();
             }
         }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using FlightPlanner_WebApp.Data;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,36 +8,57 @@ namespace FlightPlanner_WebApp
 {
     public class FlightStorage
     {
-        private static List<Flight> _flights = new List<Flight>();
         private static int _id = 1;
+        private readonly FlightPlannerDbContext _db;
+        private static List<Flight> _flights;
 
-        public static Flight AddFlight(Flight flight)
+        public FlightStorage(FlightPlannerDbContext db)
         {
-            flight.Id = _id++;
-            _flights.Add(flight);
+            _db = db;
+            _flights = _db.Flights
+                .Include(x => x.From)
+                .Include(x => x.To)
+                .ToList();
+        }
+
+        public  Flight AddFlight(Flight flight)
+        {
+            _db.Flights.Add(flight);
+            _db.SaveChanges();
+
             return flight; 
         }
 
-        public static Flight GetFlight(int id)
+        public Flight GetFlight(int id)
         {
-            return _flights.FirstOrDefault(f => f.Id == id);
+            var flight = _db.Flights.Where(a => a.Id == id).Include(x => x.From).Include(x => x.To).FirstOrDefault();
+            return flight;
         }
 
-        public static void Clear()
+        public  void Clear()
         {
-            _flights.Clear();
-            _id = 0;  
+            _id = 0;
+
+            _db.Flights.RemoveRange(_db.Flights);
+            _db.Airports.RemoveRange(_db.Airports);
+            _db.SaveChanges();
         }
 
-        public static bool FlightExist(Flight flight)
+        public bool FlightExist(Flight flight)
         {
-            if (_flights.Count == 0)
+            _flights = _db.Flights
+                .Include(x => x.From)
+                .Include(x => x.To)
+                .ToList();
+
+            if (_db.Flights.Count() == 0)
             {
                 return false;
             }
 
-            foreach (Flight storedFlight in _flights)
+            foreach (var storedFlight in _flights)
             {
+                var test = storedFlight;
                 if (storedFlight.Equals(flight))
                 {
                     return true;
@@ -44,17 +67,20 @@ namespace FlightPlanner_WebApp
             return false;
         }
 
-        public static void DeleteFlight(int id)
+        public Flight DeleteFlight(int id)
         {
             var flight = GetFlight(id);
 
             if (flight != null)
             {
-                _flights.Remove(flight);
+                _db.Flights.Remove(flight);
+                _db.SaveChanges();
+                return flight;
             }
+            return null;    
         }
 
-        public static HashSet<Airport> GetAllAirports()
+        public HashSet<Airport> GetAllAirports()
         {
             var airports = new HashSet<Airport>();
 
@@ -63,28 +89,13 @@ namespace FlightPlanner_WebApp
                 airports.Add(flight.From);
                 airports.Add(flight.To);
             }
-
             return airports;
         }
 
-        public static Airport FindAirport(Airport airport)
-        {
-            var airports = GetAllAirports();
-
-            foreach (Airport tempAirport in airports)
-            {
-                if (tempAirport.Equals(airport))
-                {
-                    return tempAirport;
-                }
-            }
-            return null;  
-        }
-
-        public static List<Airport> FindAirportByParameter(string search) 
+        public  List<Airport> FindAirportByParameter(string search) 
         {
             var matchedAirports = new List<Airport>();
-            var airports = GetAllAirports();
+            var airports = _db.Airports.ToList();
 
             foreach (Airport airport in airports)
             {
