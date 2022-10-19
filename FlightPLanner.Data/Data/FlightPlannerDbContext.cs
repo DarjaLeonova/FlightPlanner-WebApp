@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 namespace FlightPlanner_WebApp.Data
 {
     public class FlightPlannerDbContext : DbContext, IFlightPlannerDbContext
-
     {
         public DbSet<Flight> Flights { get; set; }
         public DbSet<Airport> Airports { get; set; }

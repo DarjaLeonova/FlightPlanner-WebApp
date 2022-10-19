@@ -1,10 +1,7 @@
 ﻿using AutoMapper;
 using FlightPlanner.Core.Services;
 using FlightPlanner.Core.Validations.AirportValidations;
-//using FlightPlanner.Core.Validations.AirportValidations.Impl;
 using FlightPlanner.Core.Validations.FlightValidations;
-//using FlightPlanner.Core.Validations.FlightValidations.Impl;
-using FlightPlanner_WebApp.Data;
 using FlightPlanner_WebApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +19,6 @@ namespace FlightPlanner_WebApp.Controllers
         private readonly IEnumerable<IFlightValidator> _flightValidators;
         private readonly IEnumerable<IAirportValidator> _airportValidators;
         private readonly IMapper _mapper;
-        private FlightStorage _flightStorage;
 
         public AdminApiController(IFlightService flightService, 
             IEnumerable<IFlightValidator> flightValidators,
@@ -33,7 +29,6 @@ namespace FlightPlanner_WebApp.Controllers
             _flightValidators = flightValidators;
             _airportValidators = airportValidators;
             _mapper = mapper;
-            //_flightStorage = new FlightStorage(_db);
         }
 
         [Route("flights/{id}")]
@@ -80,6 +75,7 @@ namespace FlightPlanner_WebApp.Controllers
             lock (LockObject)
             {
                 var flight = _flightService.GetById(id);
+
                 if(flight != null)
                 {
                     _flightService.Delete(flight);

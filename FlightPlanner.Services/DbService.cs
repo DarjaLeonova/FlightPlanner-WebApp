@@ -8,6 +8,7 @@ namespace FlightPlanner.Services
     public class DbService : IDbService
     {
         protected FlightPlannerDbContext _context;
+
         public DbService(FlightPlannerDbContext context)
         {
             _context = context;
@@ -25,6 +26,7 @@ namespace FlightPlanner.Services
         {
             _context.Set<T>().Remove(entity);
             _context.SaveChanges();
+
             return new ServiceResult(true);
         }
 

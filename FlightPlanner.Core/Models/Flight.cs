@@ -1,5 +1,4 @@
 ﻿using FlightPlanner.Core.Models;
-using System.ComponentModel.DataAnnotations;
 
 namespace FlightPlanner_WebApp
 {

@@ -3,11 +3,6 @@ using FlightPlanner.Core.Services;
 using FlightPlanner_WebApp;
 using FlightPlanner_WebApp.Data;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FlightPlanner.Services
 {
@@ -57,6 +52,7 @@ namespace FlightPlanner.Services
             {
                 var itemDate = DateTime.Parse(item.DepartureTime).ToString("yyyy-MM-dd");
                 var targetDate = DateTime.Parse(departure).ToString("yyyy-MM-dd");
+
                 if (itemDate == targetDate)
                 {
                     foundFlights.Add(item);

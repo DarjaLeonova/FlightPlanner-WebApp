@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FlightPlanner.Core.Services
+﻿namespace FlightPlanner.Core.Services
 {
     public class ServiceResult
     {
@@ -28,9 +22,7 @@ namespace FlightPlanner.Core.Services
 
         public bool Success { get; private set; }
         public IEntity Entity { get; private set; }
-
         public IList<string> Errors { get; private set; }
-
         public string FormattedErrors => string.Join(", ", Errors);
     }
 }

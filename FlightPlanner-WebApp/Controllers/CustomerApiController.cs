@@ -1,13 +1,9 @@
 ﻿using AutoMapper;
 using FlightPlanner.Core.Models;
 using FlightPlanner.Core.Services;
-using FlightPlanner.Core.Validations.AirportValidations;
-using FlightPlanner.Core.Validations.FlightValidations;
 using FlightPlanner.Core.Validations.SearchFlightValidations;
-using FlightPlanner_WebApp.Data;
 using FlightPlanner_WebApp.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace FlightPlanner_WebApp.Controllers
@@ -17,23 +13,15 @@ namespace FlightPlanner_WebApp.Controllers
     public class CustomerApiController : ControllerBase
     {
         public static readonly object LockObject = new object();
-        private readonly FlightPlannerDbContext _db;
-        private FlightStorage _flightStorage;
-
         private readonly IFlightService _flightService;
-        //private readonly IEnumerable<IFlightValidator> _flightValidators;
-        //private readonly IEnumerable<IAirportValidator> _airportValidators;
         private readonly ISearchFlightRequestValidator _searchFlightRequestValidator;
         private readonly IMapper _mapper;
 
-        public CustomerApiController(FlightPlannerDbContext db, 
+        public CustomerApiController(
             IFlightService flightService,
             ISearchFlightRequestValidator searchFlightRequestValidator,
             IMapper mapper)
         {
-            _db = db;
-            _flightStorage = new FlightStorage(_db);
-
             _searchFlightRequestValidator = searchFlightRequestValidator;
             _flightService = flightService;
             _mapper = mapper;
