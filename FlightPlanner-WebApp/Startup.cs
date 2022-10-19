@@ -1,5 +1,10 @@
+using AutoMapper;
 using FlightPlanner.Core.Services;
+using FlightPlanner.Core.Validations.AirportValidations;
+using FlightPlanner.Core.Validations.FlightValidations;
+using FlightPlanner.Core.Validations.SearchFlightValidations;
 using FlightPlanner.Services;
+using FlightPLanner.Data.Data;
 using FlightPlanner_WebApp.Data;
 using FlightPlanner_WebApp.Filters;
 using Microsoft.AspNetCore.Authentication;
@@ -45,10 +50,19 @@ namespace FlightPlanner_WebApp
             services.AddDbContext<FlightPlannerDbContext>(options => options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")
                 ));
+            services.AddScoped<IFlightPlannerDbContext, FlightPlannerDbContext>();
             services.AddScoped<IDbService, DbService>();
             services.AddScoped<IEntityService<Airport>, EntityService<Airport>>();
             services.AddScoped<IEntityService<Flight>, EntityService<Flight>>();
             services.AddScoped<IFlightService, FlightService>();
+            services.AddScoped<IFlightValidator, FlightAirportValidator>();
+            services.AddScoped<IFlightValidator, FlightCarrierValidator>();
+            services.AddScoped<IFlightValidator, FlightTimeValidator>();
+            services.AddScoped<IAirportValidator, AirportCityValidator>();
+            services.AddScoped<IAirportValidator, AirportCountryValidator>();
+            services.AddScoped<IAirportValidator, AirportNameValidator>();
+            services.AddSingleton(MapperConfigcs.CreateMapper());
+            services.AddScoped<ISearchFlightRequestValidator, SearchFlightRequestValidator>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

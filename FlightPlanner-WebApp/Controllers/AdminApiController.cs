@@ -1,9 +1,14 @@
-﻿using FlightPlanner.Core.Services;
+﻿using AutoMapper;
+using FlightPlanner.Core.Services;
+using FlightPlanner.Core.Validations.AirportValidations;
+//using FlightPlanner.Core.Validations.AirportValidations.Impl;
+using FlightPlanner.Core.Validations.FlightValidations;
+//using FlightPlanner.Core.Validations.FlightValidations.Impl;
 using FlightPlanner_WebApp.Data;
-using FlightPlanner_WebApp.Validations.AirportValidations;
-using FlightPlanner_WebApp.Validations.FlightValidations;
+using FlightPlanner_WebApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace FlightPlanner_WebApp.Controllers
@@ -14,11 +19,20 @@ namespace FlightPlanner_WebApp.Controllers
     {
         public static readonly object LockObject = new object();
         private readonly IFlightService _flightService;
+        private readonly IEnumerable<IFlightValidator> _flightValidators;
+        private readonly IEnumerable<IAirportValidator> _airportValidators;
+        private readonly IMapper _mapper;
         private FlightStorage _flightStorage;
 
-        public AdminApiController(IFlightService flightService)
+        public AdminApiController(IFlightService flightService, 
+            IEnumerable<IFlightValidator> flightValidators,
+            IEnumerable<IAirportValidator> airportValidators,
+            IMapper mapper)
         {
             _flightService = flightService;
+            _flightValidators = flightValidators;
+            _airportValidators = airportValidators;
+            _mapper = mapper;
             //_flightStorage = new FlightStorage(_db);
         }
 
@@ -32,7 +46,7 @@ namespace FlightPlanner_WebApp.Controllers
             {
                 return NotFound();
             }
-            return Ok(_flightStorage);
+            return Ok(flight);
         }
 
         [Route("flights")]
@@ -41,21 +55,21 @@ namespace FlightPlanner_WebApp.Controllers
         {
             lock (LockObject)
             {
-                if (_flightStorage.FlightExist(flight))
+                if (_flightService.Exists(flight))
                 {
                     return Conflict();
                 }
 
-               if (FlightValidations.ObjectValidation(flight) ||
-                    AirportValidations.SameAirportValidation(flight.To, flight.From) ||
-                    !FlightValidations.NotValidDateTimeValidation(flight))
+                if (!_flightValidators.All(f => f.IsValid(flight)) ||
+                   ! _airportValidators.All(f => f.IsValid(flight?.From)) ||
+                   ! _airportValidators.All(f => f.IsValid(flight?.To)))
                 {
                     return BadRequest();
                 }
-
-                _flightService.Create(flight);
-
-                return Created("", flight);
+                var result = _flightService.Create(flight);
+                var response = _mapper.Map<FlightRequest>(flight);
+               
+                return Created("", response);
             }
         }
 

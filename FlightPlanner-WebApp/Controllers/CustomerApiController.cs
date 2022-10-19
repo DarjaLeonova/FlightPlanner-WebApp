@@ -1,5 +1,14 @@
-﻿using FlightPlanner_WebApp.Data;
+﻿using AutoMapper;
+using FlightPlanner.Core.Models;
+using FlightPlanner.Core.Services;
+using FlightPlanner.Core.Validations.AirportValidations;
+using FlightPlanner.Core.Validations.FlightValidations;
+using FlightPlanner.Core.Validations.SearchFlightValidations;
+using FlightPlanner_WebApp.Data;
+using FlightPlanner_WebApp.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace FlightPlanner_WebApp.Controllers
 {
@@ -11,37 +20,48 @@ namespace FlightPlanner_WebApp.Controllers
         private readonly FlightPlannerDbContext _db;
         private FlightStorage _flightStorage;
 
-        public CustomerApiController(FlightPlannerDbContext db)
+        private readonly IFlightService _flightService;
+        //private readonly IEnumerable<IFlightValidator> _flightValidators;
+        //private readonly IEnumerable<IAirportValidator> _airportValidators;
+        private readonly ISearchFlightRequestValidator _searchFlightRequestValidator;
+        private readonly IMapper _mapper;
+
+        public CustomerApiController(FlightPlannerDbContext db, 
+            IFlightService flightService,
+            ISearchFlightRequestValidator searchFlightRequestValidator,
+            IMapper mapper)
         {
             _db = db;
             _flightStorage = new FlightStorage(_db);
+
+            _searchFlightRequestValidator = searchFlightRequestValidator;
+            _flightService = flightService;
+            _mapper = mapper;
         }
 
         [Route("airports")]
         [HttpGet]
         public IActionResult GetAirport(string search)
         {
-            var airport = _flightStorage.FindAirportByParameter(search);
-            return Ok(airport);
+            search = search.Trim().ToLower();
+
+            var airport = _flightService.SearchAirports(search);
+            var response = airport.Select(x => _mapper.Map<AirportRequest>(x)).ToList();
+
+            return Ok(response);
         }
 
         [Route("flights/search")]
         [HttpPost]
-        public IActionResult PostFlight(SearchFlightsRequest flightRequest)
+        public IActionResult PostFlight(SearchFlightRequest request)
         {  
-            if (flightRequest.ObjectValidation() || flightRequest.AirportValidation())
+            if (_searchFlightRequestValidator.ObjectValidation(request) || _searchFlightRequestValidator.AirportValidation(request))
             {
                 return BadRequest();
             }
-            var matchedFlights = FlightStorage.GetMatchedFlightResult(flightRequest);
+            var matchedFlights = _flightService.SearchFlightsByRequest(request.To, request.From, request.DepartureTime);
 
-            if(matchedFlights.Items != null)
-            {
-                return Ok(matchedFlights);
-            }else
-            {
-                return Ok(new SearchFlightResult());
-            }   
+            return Ok(matchedFlights);
         }
 
         [Route("flights/{id}")]
@@ -50,13 +70,15 @@ namespace FlightPlanner_WebApp.Controllers
         {
             lock (LockObject) {
 
-                var flight = _flightStorage.GetFlight(id);
+                var flight = _flightService.GetCompleteFlightById(id);
 
                 if (flight == null)
                 {
                     return NotFound();
                 }
-                return Ok(flight);
+                var response = _mapper.Map<FlightRequest>(flight);
+
+                return Ok(response);
             } 
         }
     }

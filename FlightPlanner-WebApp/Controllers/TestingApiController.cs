@@ -1,4 +1,5 @@
-﻿using FlightPlanner_WebApp.Data;
+﻿using FlightPlanner.Core.Services;
+using FlightPlanner_WebApp.Data;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlightPlanner_WebApp.Controllers
@@ -8,19 +9,19 @@ namespace FlightPlanner_WebApp.Controllers
     public class TestingApiController : ControllerBase
     {
         private readonly FlightPlannerDbContext _db;
-        private FlightStorage _flightStorage;
+        //private FlightStorage _flightStorage;
+        private readonly IFlightService _flightService;
 
-        public TestingApiController(FlightPlannerDbContext db)
+        public TestingApiController(IFlightService flightService)
         {
-            _db = db;
-            _flightStorage = new FlightStorage(_db);
+            _flightService = flightService;
         }
 
         [HttpPost]
         [Route ("clear")]
         public IActionResult Clear()
         {
-            _flightStorage.Clear();
+            _flightService.DeleteAll();
             return Ok();
         }
     }

@@ -7,9 +7,10 @@ namespace FlightPlanner_WebApp
 {
     public class Airport : Entity
     {
+    
         public string Country { get; set; }
         public string City { get; set; }
-        //[JsonPropertyName("airport")]
+        [JsonPropertyName("airport")]
         public string AirportName { get; set; }
 
         public Airport() { }
