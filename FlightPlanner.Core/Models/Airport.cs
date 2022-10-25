@@ -1,14 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using FlightPlanner.Core.Models;
 using System.Text.Json.Serialization;
 
 namespace FlightPlanner_WebApp
 {
-    public class Airport
+    public class Airport : Entity
     {
-        [Key]
-        [JsonIgnore]
-        public int Id { get; set; }
         public string Country { get; set; }
         public string City { get; set; }
         [JsonPropertyName("airport")]
