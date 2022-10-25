@@ -17,5 +17,7 @@ namespace FlightPlanner.Core.Services
         public T GetById<T>(int id) where T : Entity;
 
         public IQueryable<T> Query<T>() where T : Entity;
+
+        public void DeleteAll<T>() where T : Entity;
     }
 }

@@ -52,5 +52,10 @@ namespace FlightPlanner.Services
         {
             return _context.Set<T>().AsQueryable();
         }
+
+        public void DeleteAll<T>() where T : Entity
+        {
+            _context.Set<T>().RemoveRange();
+        }
     }
 }

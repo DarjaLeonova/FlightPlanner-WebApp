@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FlightPlanner.Services
 {
-    public class FlightService : EntityService<Flight>, IFlightService
+    public class AirporttService : EntityService<Flight>, IFlightService
     {
-        public FlightService(FlightPlannerDbContext context) : base(context)
+        public AirporttService(FlightPlannerDbContext context) : base(context)
         {
         }
 
@@ -28,16 +28,6 @@ namespace FlightPlanner.Services
                 f.Carrier == flight.Carrier &&
                 f.From.AirportName == flight.From.AirportName &&
                 f.To.AirportName == flight.To.AirportName);
-        }
-
-        public List<Airport> SearchAirports(string word)
-        {
-            var result = _context.Airports.Where(a => a.AirportName.ToLower().Trim().Contains(word) || 
-            a.Country.ToLower().Trim().Contains(word) || 
-            a.City.ToLower().Trim().Contains(word)).ToList();
-
-            return result.DistinctBy(a => a.AirportName).ToList();
-
         }
 
         public SearchFlightResult SearchFlightsByRequest(string from, string to, string departure)
@@ -67,13 +57,6 @@ namespace FlightPlanner.Services
             };
 
             return result;
-        }
-
-        public void DeleteAll()
-        {
-            _context.Flights.RemoveRange(_context.Flights);
-            _context.Airports.RemoveRange(_context.Airports);
-            _context.SaveChanges();
         }
     }
 }

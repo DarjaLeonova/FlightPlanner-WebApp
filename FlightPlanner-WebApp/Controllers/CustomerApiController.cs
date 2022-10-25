@@ -14,17 +14,20 @@ namespace FlightPlanner_WebApp.Controllers
     {
         public static readonly object LockObject = new object();
         private readonly IFlightService _flightService;
+        private readonly IAirportService _airportService;
         private readonly ISearchFlightRequestValidator _searchFlightRequestValidator;
         private readonly IMapper _mapper;
 
         public CustomerApiController(
             IFlightService flightService,
             ISearchFlightRequestValidator searchFlightRequestValidator,
-            IMapper mapper)
+            IMapper mapper,
+            IAirportService airportService)
         {
             _searchFlightRequestValidator = searchFlightRequestValidator;
             _flightService = flightService;
             _mapper = mapper;
+            _airportService = airportService;
         }
 
         [Route("airports")]
@@ -33,7 +36,7 @@ namespace FlightPlanner_WebApp.Controllers
         {
             search = search.Trim().ToLower();
 
-            var airport = _flightService.SearchAirports(search);
+            var airport = _airportService.SearchAirports(search);
             var response = airport.Select(x => _mapper.Map<AirportRequest>(x)).ToList();
 
             return Ok(response);

@@ -7,9 +7,8 @@ namespace FlightPlanner.Core.Services
     {
         Flight GetCompleteFlightById(int id);
         bool Exists(Flight flight);
-        List<Airport> SearchAirports(string q);
         SearchFlightResult SearchFlightsByRequest(string from, string to, string departure);
 
-        public void DeleteAll();
+       // public void DeleteAll();
     }
 }

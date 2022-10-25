@@ -8,17 +8,20 @@ namespace FlightPlanner_WebApp.Controllers
     public class TestingApiController : ControllerBase
     {
         private readonly IFlightService _flightService;
+        private readonly IDbService _dbService;
 
-        public TestingApiController(IFlightService flightService)
+        public TestingApiController(IFlightService flightService, IDbService dbService)
         {
             _flightService = flightService;
+            _dbService = dbService;
         }
 
         [HttpPost]
         [Route ("clear")]
         public IActionResult Clear()
         {
-            _flightService.DeleteAll();
+            _dbService.DeleteAll<Flight>();
+            _dbService.DeleteAll<Airport>();
             return Ok();
         }
     }
